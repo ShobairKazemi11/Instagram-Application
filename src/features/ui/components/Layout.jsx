@@ -1,80 +1,214 @@
 // src/features/ui/components/Layout.jsx
-import { AppShell, Burger, ActionIcon, Group } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
-import { IconSun, IconMoon, IconBrandInstagram } from '@tabler/icons-react'
-import { useThemeStore } from '../store/theme.store'
-import NavBar from './NavBar'
-import { useAuthStore } from '../../auth/store/auth.store'
+import { useState } from 'react';
+import { IconSun, IconMoon, IconBrandInstagram, IconHome, IconUser, IconUsers, IconMessage, IconLogout } from '@tabler/icons-react';
+import { useThemeStore } from '../store/theme.store';
+import { useAuthStore } from '../../auth/store/auth.store';
+import { NavLink, useNavigate } from 'react-router';
 
 const Layout = ({ children }) => {
-  const [opened, { toggle }] = useDisclosure()
-  const { colorScheme, toggleColorScheme } = useThemeStore()
-  const { isAuthenticated } = useAuthStore()
-  
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { colorScheme, toggleColorScheme } = useThemeStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
+  const navigate = useNavigate();
+
   if (!isAuthenticated) {
-    return children
+    return children;
   }
 
+  const navItems = [
+    { icon: IconHome, label: 'Feed', path: '/feed' },
+    { icon: IconUser, label: 'Profile', path: '/profile' },
+    { icon: IconUsers, label: 'Users', path: '/users' },
+    { icon: IconMessage, label: 'Chat', path: '/chat' },
+  ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
-    <AppShell
-      header={{ height: 70 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      padding="md"
-      styles={{
-        main: {
-          background: colorScheme === 'dark' 
-            ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
-            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          minHeight: '100vh',
-        },
-      }}
-    >
-      <AppShell.Header className="glass-card" style={{ borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          height: '100%', 
-          padding: '0 1.5rem'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              hiddenFrom="sm"
-              size="sm"
-              color="white"
-            />
-            <Group gap="xs">
-              <IconBrandInstagram 
-                size={28}
-                className="gradient-text"
-              />
-              <div className="text-xl font-bold gradient-text">
-                SocialApp
-              </div>
-            </Group>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-purple-800">
+      {/* Mobile Header */}
+      <header className="lg:hidden glass-card p-4">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-white"
+          >
+            <div className="w-6 h-6 flex flex-col justify-center gap-1">
+              <div className="w-full h-0.5 bg-white rounded"></div>
+              <div className="w-full h-0.5 bg-white rounded"></div>
+              <div className="w-full h-0.5 bg-white rounded"></div>
+            </div>
+          </button>
+          
+          <div className="flex items-center gap-2">
+            <IconBrandInstagram className="w-8 h-8 text-white" />
+            <span className="text-xl font-bold text-white">SocialApp</span>
           </div>
 
-          <ActionIcon
-            className="glass-button"
+          <button
             onClick={toggleColorScheme}
-            size="lg"
+            className="p-2 text-white"
           >
-            {colorScheme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
-          </ActionIcon>
+            {colorScheme === 'dark' ? <IconSun className="w-6 h-6" /> : <IconMoon className="w-6 h-6" />}
+          </button>
         </div>
-      </AppShell.Header>
+      </header>
 
-      <AppShell.Navbar className="glass-card" style={{ borderRight: '1px solid rgba(255,255,255,0.2)' }}>
-        <NavBar />
-      </AppShell.Navbar>
+      <div className="flex">
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:block w-80 h-screen glass-card sticky top-0">
+          <div className="p-6 h-full flex flex-col">
+            {/* Brand */}
+            <div className="flex items-center gap-3 mb-8">
+              <IconBrandInstagram className="w-8 h-8 text-white" />
+              <span className="text-2xl font-bold text-white">SocialApp</span>
+            </div>
 
-      <AppShell.Main style={{ paddingTop: '1.5rem' }}>
-        {children}
-      </AppShell.Main>
-    </AppShell>
-  )
-}
+            {/* User Info */}
+            <div className="flex items-center gap-4 mb-8 p-4 rounded-lg bg-white/10">
+              <img
+                src={user?.avatar}
+                alt={user?.name}
+                className="w-12 h-12 rounded-full border-2 border-white/30"
+              />
+              <div className="flex-1">
+                <p className="font-semibold text-white">{user?.name}</p>
+                <p className="text-white/60 text-sm">{user?.bio}</p>
+              </div>
+            </div>
 
-export default Layout
+            {/* Navigation */}
+            <nav className="space-y-2 flex-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? 'bg-white/20 text-white'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
+                      }`
+                    }
+                  >
+                    <Icon className="w-6 h-6" />
+                    <span className="font-medium">{item.label}</span>
+                  </NavLink>
+                );
+              })}
+            </nav>
+
+            {/* Footer Actions */}
+            <div className="space-y-2 pt-4 border-t border-white/20">
+              <button
+                onClick={toggleColorScheme}
+                className="flex items-center gap-3 p-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white w-full transition-all duration-200"
+              >
+                {colorScheme === 'dark' ? <IconSun className="w-6 h-6" /> : <IconMoon className="w-6 h-6" />}
+                <span className="font-medium">
+                  {colorScheme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </span>
+              </button>
+              
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-red-400/10 w-full transition-all duration-200"
+              >
+                <IconLogout className="w-6 h-6" />
+                <span className="font-medium">Logout</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* Mobile Sidebar */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 z-50">
+            <div 
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="absolute left-0 top-0 bottom-0 w-80 glass-card">
+              <div className="p-6 h-full flex flex-col">
+                {/* Same content as desktop sidebar */}
+                <div className="flex items-center gap-3 mb-8">
+                  <IconBrandInstagram className="w-8 h-8 text-white" />
+                  <span className="text-2xl font-bold text-white">SocialApp</span>
+                </div>
+
+                <div className="flex items-center gap-4 mb-8 p-4 rounded-lg bg-white/10">
+                  <img
+                    src={user?.avatar}
+                    alt={user?.name}
+                    className="w-12 h-12 rounded-full border-2 border-white/30"
+                  />
+                  <div className="flex-1">
+                    <p className="font-semibold text-white">{user?.name}</p>
+                    <p className="text-white/60 text-sm">{user?.bio}</p>
+                  </div>
+                </div>
+
+                <nav className="space-y-2 flex-1">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                            isActive
+                              ? 'bg-white/20 text-white'
+                              : 'text-white/70 hover:bg-white/10 hover:text-white'
+                          }`
+                        }
+                      >
+                        <Icon className="w-6 h-6" />
+                        <span className="font-medium">{item.label}</span>
+                      </NavLink>
+                    );
+                  })}
+                </nav>
+
+                <div className="space-y-2 pt-4 border-t border-white/20">
+                  <button
+                    onClick={toggleColorScheme}
+                    className="flex items-center gap-3 p-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white w-full transition-all duration-200"
+                  >
+                    {colorScheme === 'dark' ? <IconSun className="w-6 h-6" /> : <IconMoon className="w-6 h-6" />}
+                    <span className="font-medium">
+                      {colorScheme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    </span>
+                  </button>
+                  
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-red-400/10 w-full transition-all duration-200"
+                  >
+                    <IconLogout className="w-6 h-6" />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Main Content */}
+        <main className="flex-1 lg:ml-0 min-h-screen">
+          <div className="p-4 lg:p-6">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Layout;

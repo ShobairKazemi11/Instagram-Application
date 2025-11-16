@@ -1,22 +1,19 @@
 // src/App.jsx
-import { Routes, Route, Navigate } from 'react-router'
-import Layout from './features/ui/components/Layout'
-import LoginPage from './features/auth/pages/LoginPage'
-import FeedPage from './features/posts/pages/FeedPage'
-import PostPage from './features/posts/pages/PostPage'
-import ProfilePage from './features/profile/pages/ProfilePage'
-import UsersPage from './features/users/pages/UsersPage'
-import ChatPage from './features/chat/pages/ChatPage'
-import { useAuthStore } from './features/auth/store/auth.store'
+import { Routes, Route, Navigate } from 'react-router';
+import Layout from './features/ui/components/Layout';
+import LoginPage from './features/auth/pages/LoginPage';
+import FeedPage from './features/posts/pages/FeedPage';
+import PostPage from './features/posts/pages/PostPage';
+import ProfilePage from './features/profile/pages/ProfilePage';
+import UsersPage from './features/users/pages/UsersPage';
+import ChatPage from './features/chat/pages/ChatPage';
+import { useAuthStore } from './features/auth/store/auth.store';
 
 function App() {
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated } = useAuthStore();
 
   return (
-    <div style={{ 
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-purple-800">
       <Layout>
         <Routes>
           <Route 
@@ -50,7 +47,7 @@ function App() {
         </Routes>
       </Layout>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,151 +1,39 @@
-/* Add these to src/global.css */
+/* src/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Stats card hover effects */
-.stats-card {
-  transition: all 0.3s ease !important;
+/* Custom glassmorphism classes */
+.glass-card {
+  @apply bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl shadow-xl;
 }
 
-.stats-card:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
-  transform: translateY(-3px) !important;
+.glass-input {
+  @apply bg-white/20 dark:bg-black/20 backdrop-blur-sm border border-white/30 dark:border-white/10 rounded-lg text-white placeholder-white/70;
 }
 
-[data-mantine-color-scheme="dark"] .stats-card {
-  background: rgba(255, 255, 255, 0.05) !important;
+.glass-button {
+  @apply bg-white/20 dark:bg-black/20 backdrop-blur-sm border border-white/30 dark:border-white/10 rounded-lg text-white hover:bg-white/30 transition-all duration-300;
 }
 
-/* Online status animation */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+/* Smooth transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.online-status {
-  animation: pulse 2s infinite;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-/* Button disabled states */
-.glass-button:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
+::-webkit-scrollbar-track {
+  @apply bg-white/10 rounded-full;
 }
 
-.gradient-button:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
+::-webkit-scrollbar-thumb {
+  @apply bg-white/30 rounded-full;
 }
 
-/* Image styles for posts */
-.post-image {
-  border-radius: 12px !important;
-  margin-bottom: 1rem !important;
-  max-height: 400px !important;
-  object-fit: cover !important;
-  width: 100% !important;
-}
-
-/* Tab styles */
-.mantine-Tabs-tab {
-  color: rgba(255, 255, 255, 0.7) !important;
-  transition: all 0.3s ease !important;
-}
-
-.mantine-Tabs-tab[data-active] {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-}
-
-.mantine-Tabs-tab:hover {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Menu dropdown styles */
-.mantine-Menu-dropdown {
-  background: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.mantine-Menu-item {
-  color: #333 !important;
-}
-
-.mantine-Menu-item:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Scroll area styles */
-.mantine-ScrollArea-viewport {
-  padding: 0.5rem !important;
-}
-
-/* Avatar border consistency */
-.mantine-Avatar-root {
-  border: 2px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Text area styles */
-.mantine-Textarea-input {
-  background: rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 12px !important;
-  color: white !important;
-}
-
-.mantine-Textarea-input::placeholder {
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-
-.mantine-Textarea-input:focus {
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Select dropdown styles */
-.mantine-Select-dropdown {
-  background: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.mantine-Select-option {
-  color: #333 !important;
-}
-
-.mantine-Select-option:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Badge styles */
-.mantine-Badge-root {
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-/* Action icon hover states */
-.mantine-ActionIcon-root {
-  transition: all 0.3s ease !important;
-}
-
-.mantine-ActionIcon-root:hover {
-  transform: scale(1.1) !important;
-}
-
-/* Grid spacing */
-.mantine-Grid-root {
-  margin: 0 !important;
-}
-
-.mantine-Grid-col {
-  padding: 0.5rem !important;
-}
-
-/* Container max widths */
-.mantine-Container-root {
-  max-width: none !important;
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/50;
 }
